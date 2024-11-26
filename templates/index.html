@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英作文練習</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>英作文練習</h1>
+        <p>問題: {{ question['question'] }}</p>
+        <form id="answer-form">
+            <input type="hidden" name="question_id" value="{{ question['id'] }}">
+            <textarea name="answer" placeholder="ここに回答を書いてください"></textarea>
+            <button type="submit">送信</button>
+        </form>
+        <div id="feedback"></div>
+
+    </div>
+    <script>
+        document.getElementById('answer-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/submit', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById('feedback').innerText = "フィードバック: " + result.feedback;
+        });
+    </script>
+</body>
+</html>
