@@ -93,7 +93,7 @@ button[type="submit"]:hover {
 /* スマホ用のスタイル */
 @media (max-width: 768px) {
     #question-text {
-        max-width: 100%; /* スマホでは幅を100%に広げる */
+        max-width: 95%; /* スマホでは幅を100%に広げる */
     }
 }
 
@@ -114,7 +114,7 @@ button[type="submit"]:hover {
 /* スマホ用のスタイル */
 @media (max-width: 768px) {
     #answer-form {
-        max-width: 100%; /* スマホでは幅を100%に広げる */
+        max-width: 95%; /* スマホでは幅を100%に広げる */
     }
 }
 
@@ -138,7 +138,7 @@ button[type="submit"]:hover {
 /* スマホ用のスタイル */
 @media (max-width: 768px) {
     #feedbacks {
-        max-width: 100%; /* スマホでは幅を100%まで広げる */
+        max-width: 95%; /* スマホでは幅を100%まで広げる */
     }
 }
 
@@ -151,6 +151,8 @@ button[type="submit"]:hover {
     width: 30px;
     height: 30px;
     animation: spin 2s linear infinite;
+    margin-left: auto; /* 中央寄せ */
+    margin-right: auto; /* 中央寄せ */p
 }
 
 @keyframes spin {
