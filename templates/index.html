@@ -1,33 +1,134 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英作文練習</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>英作文練習</title>
+        <link rel="stylesheet" href="static/css/styles.css">
+  
+    </head>
+    
 <body>
-    <div class="container">
-        <h1>英作文練習</h1>
-        <p>問題: {{ question['question'] }}</p>
-        <form id="answer-form">
-            <input type="hidden" name="question_id" value="{{ question['id'] }}">
-            <textarea name="answer" placeholder="ここに回答を書いてください"></textarea>
-            <button type="submit">送信</button>
-        </form>
-        <div id="feedback"></div>
+    <h1>英作文練習</h1>
+    
+    <!-- 問題文を表示 -->
+    <p>{{ question['question'] }}</p>
+    
+    <form id="answer-form">
+        <!-- 問題文を隠しフィールドに設定 -->
+        <input type="hidden" name="question_text" value="{{ question['question'] }}">
+        <textarea name="answer" placeholder="ここに回答を書いてください"></textarea>
+        <button type="submit">送信</button>
+        <button type="button" id="reset-btn" style="background-color: orange;">更新</button>
+    </form>
 
+    <div id="loading" style="display: none;">
+        <div class="loader"></div>
     </div>
+    
+    <div id="feedbacks">
+        <!-- フィードバックリストが追加される場所 -->
+    </div>
+
+    <div id="follow-up" style="display: none;">
+        <textarea id="follow-up-question" placeholder="フィードバックに対する質問を入力してください"></textarea>
+        <button id="send-follow-up">質問を送信</button>
+    </div>
+
     <script>
-        document.getElementById('answer-form').addEventListener('submit', async function(e) {
+        let questionCount = 1; // 質問のカウントを管理
+
+        function addFeedbackSection(question, feedback) {
+            // 新しいセクションを作成
+            const section = document.createElement('div');
+            section.className = 'feedback-section';
+
+            // セクション内容を作成
+            section.innerHTML = `
+                <div class="feedback-header">
+                    <strong>質問 ${questionCount}:</strong>
+                    <p>${question}</p>
+                </div>
+                <div class="feedback-content">
+                    <strong>フィードバック:</strong>
+                    <p>${feedback.replace(/\n/g, '<br>')}</p>
+                </div>
+            `;
+
+            // フィードバックセクションを追加
+            document.getElementById('feedbacks').appendChild(section);
+
+            // 質問カウントを更新
+            questionCount++;
+        }
+
+        // 最初の送信フォームイベント
+        document.getElementById('answer-form').addEventListener('submit', async function (e) {
             e.preventDefault();
             const formData = new FormData(this);
-            const response = await fetch('/submit', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            document.getElementById('feedback').innerText = "フィードバック: " + result.feedback;
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (result.error) {
+                    addFeedbackSection('最初の質問', `エラー: ${result.error}`);
+                } else {
+                    addFeedbackSection('最初の質問', result.feedback);
+                    localStorage.setItem('lastFeedback', result.feedback);
+                    document.getElementById('follow-up').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                addFeedbackSection('最初の質問', '通信エラーが発生しました。');
+            }
+        });
+
+        // フォローアップ質問送信イベント
+        document.getElementById('send-follow-up').addEventListener('click', async function () {
+            const lastFeedback = localStorage.getItem('lastFeedback');
+            const followUpQuestion = document.getElementById('follow-up-question').value;
+
+            if (followUpQuestion) {
+                // ローディングインジケータを表示
+                document.getElementById('loading').style.display = 'block';
+
+                try {
+                    const response = await fetch('/submit-follow-up', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ question: followUpQuestion, feedback: lastFeedback }),
+                    });
+                    const result = await response.json();
+
+                    // ローディングインジケータを非表示
+                    document.getElementById('loading').style.display = 'none';
+
+                    if (result.error) {
+                        addFeedbackSection(followUpQuestion, `エラー: ${result.error}`);
+                    } else {
+                        addFeedbackSection(followUpQuestion, result.feedback);
+                        document.getElementById('follow-up-question').value = ''; // 質問エリアをクリア
+                    }
+                } catch (error) {
+                    // ローディングインジケータを非表示
+                    document.getElementById('loading').style.display = 'none';
+                    addFeedbackSection(followUpQuestion, '通信エラーが発生しました。');
+                }
+            }
+        });
+
+
+
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            window.location.reload(); // ページをリフレッシュ
         });
     </script>
 </body>

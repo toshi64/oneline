@@ -9,7 +9,9 @@ body {
     justify-content: center; /* 水平方向の中央寄せ */
     align-items: center; /* 垂直方向の中央寄せ */
     height: 100vh; /* ビューポート全体の高さを確保 */
+    flex-direction: column; /* 子要素を縦に並べる */
 }
+
 
 /* メインコンテナのスタイル */
 .container {
@@ -50,22 +52,87 @@ button {
     padding: 10px;
     font-size: 16px;
     font-weight: bold;
-    background-color: #0074d9; /* 明るい青 */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 5px; /* ボタン間に少し隙間を追加 */
 }
 
-button:hover {
+button[type="submit"] {
+    background-color: #0074d9; /* 明るい青 */
+    margin-bottom: 10px; /* 送信ボタンの下に隙間を追加 */
+}
+
+button[type="submit"]:hover {
     background-color: #005bb5; /* ホバー時に少し濃い青 */
 }
 
+#reset-btn {
+    background-color: orange;
+}
+
+#reset-btn:hover {
+    background-color: darkorange; /* ホバー時に暗いオレンジ */
+}
+
 /* フィードバックエリア */
-#feedback {
+/* フィードバックエリア */
+#feedbacks {
     margin-top: 15px;
     font-size: 16px;
-    text-align: center;
-    color: #0074d9;
+    text-align: left; /* テキストを左揃えに変更 */
+    color: black; /* 文字色を黒に変更 */
+    background-color: #ffffff; /* 背景を白色に */
+    padding: 10px; /* パディングを追加 */
+    border: 1px solid #ccc; /* 枠線を追加 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+
+    /* 幅制限 */
+    width: 100%; /* デフォルトでは全幅 */
+    max-width: 50%; /* 最大幅を画面の50%に制限 */
+    margin-left: auto; /* 中央寄せ */
+    margin-right: auto; /* 中央寄せ */
+    box-sizing: border-box; /* パディングを含めて幅を計算 */
 }
+
+
+.loader {
+    border: 5px solid #f3f3f3; /* Light grey */
+    border-top: 5px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#follow-up {
+    margin-top: 20px; /* 上部に余白を追加 */
+}
+
+#follow-up-question {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9fcff; /* 背景を少し柔らかい青に */
+    color: #333;
+    resize: none; /* サイズ変更を禁止 */
+}
+
+#send-follow-up {
+    background-color: #0074d9; /* 送信ボタンと同じ青色 */
+    margin-top: 10px; /* 他の要素との間に適度な余白 */
+}
+
+#send-follow-up:hover {
+    background-color: #005bb5; /* ホバー時に濃い青 */
