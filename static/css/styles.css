@@ -7,9 +7,12 @@ body {
     color: #333;
     display: flex;
     justify-content: center; /* 水平方向の中央寄せ */
-    align-items: center; /* 垂直方向の中央寄せ */
-    height: 100vh; /* ビューポート全体の高さを確保 */
     flex-direction: column; /* 子要素を縦に並べる */
+    min-height: 100vh; /* 最低限の高さをビューポート全体に設定 */
+}
+
+html, body {
+    overflow-y: auto; /* コンテンツが多い場合に縦スクロールを許可 */
 }
 
 
@@ -32,9 +35,9 @@ h1 {
     color: #0074d9; /* 青基調の文字色 */
 }
 
-/* テキストエリアのスタイル */
 textarea {
     width: 100%;
+    max-width: 97%;
     height: 100px;
     padding: 10px;
     font-size: 16px;
@@ -77,8 +80,45 @@ button[type="submit"]:hover {
     background-color: darkorange; /* ホバー時に暗いオレンジ */
 }
 
-/* フィードバックエリア */
-/* フィードバックエリア */
+#question-text {
+    width: 100%;
+    max-width: 50%; /* PCでは最大幅を50%に制限 */
+    margin-left: auto; /* 中央寄せ */
+    margin-right: auto; /* 中央寄せ */
+    text-align: center; /* テキストを左揃えに設定 */
+    padding: 10px; /* 内側の余白を追加 */
+    margin-bottom: 15px; /* 下に余白を追加 */
+}
+
+/* スマホ用のスタイル */
+@media (max-width: 768px) {
+    #question-text {
+        max-width: 100%; /* スマホでは幅を100%に広げる */
+    }
+}
+
+
+#answer-form {
+    width: 100%;
+    max-width: 50%; /* PCでは最大幅を50%に制限 */
+    margin-left: auto; /* 中央寄せ */
+    margin-right: auto; /* 中央寄せ */
+    padding: 10px; /* 内側の余白を追加 */
+    background-color: #ffffff; /* 背景を白色に */
+    border: 1px solid #ccc; /* 枠線を追加 */
+    border-radius: 5px; /* 角を丸くする */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+    box-sizing: border-box; /* パディングを含めて幅を計算 */
+}
+
+/* スマホ用のスタイル */
+@media (max-width: 768px) {
+    #answer-form {
+        max-width: 100%; /* スマホでは幅を100%に広げる */
+    }
+}
+
+
 #feedbacks {
     margin-top: 15px;
     font-size: 16px;
@@ -88,14 +128,20 @@ button[type="submit"]:hover {
     padding: 10px; /* パディングを追加 */
     border: 1px solid #ccc; /* 枠線を追加 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
-
-    /* 幅制限 */
-    width: 100%; /* デフォルトでは全幅 */
-    max-width: 50%; /* 最大幅を画面の50%に制限 */
+    width: 100%;
+    max-width: 50%; /* PCでの最大幅 */
     margin-left: auto; /* 中央寄せ */
     margin-right: auto; /* 中央寄せ */
-    box-sizing: border-box; /* パディングを含めて幅を計算 */
+    box-sizing: border-box;
 }
+
+/* スマホ用のスタイル */
+@media (max-width: 768px) {
+    #feedbacks {
+        max-width: 100%; /* スマホでは幅を100%まで広げる */
+    }
+}
+
 
 
 .loader {
