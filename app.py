@@ -40,19 +40,40 @@ def submit():
         # OpenAIのChat呼び出し形式
         chat_completion = client.chat.completions.create(
             messages=[
-                {"role": "system", "content": "あなたは英語教師で、ユーザーの英作文を添削してください。"},
-                {"role": "user", "content": f"以下の日本語文を英訳した文を添削し、改善点を教えてください。ある程度改行して読みやすくしてください。\n\n問題文: {question_text}\nユーザーの回答: {user_answer}"}
+                {
+                    "role": "system",
+                    "content": (
+                        "あなたは英語教師で、ユーザーの英作文を添削してください。"
+                        "以下のルールでHTML構造を使用してフィードバックを階層化してください："
+                        "1. 見出しには<h3>タグを使用してください"
+                        "3. 重要なポイントは<strong>タグで強調してください（例: '主語が単数です'）。"
+                        "4. 箇条書きリストには<ul>と<li>タグを使用してください。"
+                        "5. 必要に応じて、引用には<blockquote>タグを使用してください。"
+                        "6. すべてのフィードバックはHTML形式で読みやすく返してください。"
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"以下の日本語文を英訳した文を添削し、改善点を教えてください。"
+                        f"ある程度改行して読みやすくしてください。\n\n"
+                        f"問題文: {question_text}\nユーザーの回答: {user_answer}"
+                    )
+                }
             ],
             model="gpt-4o-mini",
         )
 
-        # フィードバックをレスポンスから取得
-        feedback = chat_completion.choices[0].message.content.strip()
+        ## フィードバックをレスポンスから取得
+        feedback_html = chat_completion.choices[0].message.content.strip()
 
-        return jsonify({"feedback": feedback})
+        # コードブロック記号を削除
+        feedback_cleaned = feedback_html.replace("```html", "").replace("```", "")
+
+        # 修正済みのフィードバックをJSONとして返す
+        return jsonify({"feedback": feedback_cleaned})
     except Exception as e:
         return jsonify({"error": f"OpenAIエラー: {str(e)}"}), 500
-
 
 @app.route('/submit-follow-up', methods=['POST'])
 def submit_follow_up():
