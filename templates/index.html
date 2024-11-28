@@ -40,7 +40,7 @@
     <script>
         let questionCount = 1; // 質問のカウントを管理
 
-        function addFeedbackSection(question, feedback) {
+        function addFeedbackSection(userAnswer, feedback) {
             // 新しいセクションを作成
             const section = document.createElement('div');
             section.className = 'feedback-section';
@@ -48,11 +48,11 @@
             // セクション内容を作成
             section.innerHTML = `
                 <div class="feedback-header">
-                    <strong>質問 ${questionCount}:</strong>
-                    <p>${question}</p>
+                    <strong>あなた:</strong>
+                    <p>${userAnswer.replace(/\n/g, '<br>')}</p>
                 </div>
                 <div class="feedback-content">
-                    <strong>フィードバック:</strong>
+                    <strong>AIからの回答:</strong>
                     <p>${feedback.replace(/\n/g, '<br>')}</p>
                 </div>
             `;
@@ -68,6 +68,7 @@
         document.getElementById('answer-form').addEventListener('submit', async function (e) {
             e.preventDefault();
             const formData = new FormData(this);
+            const userAnswer = formData.get('answer'); // ユーザーの回答を取得
 
             document.getElementById('loading').style.display = 'block';
 
@@ -81,17 +82,18 @@
                 document.getElementById('loading').style.display = 'none';
 
                 if (result.error) {
-                    addFeedbackSection('最初の質問', `エラー: ${result.error}`);
+                    addFeedbackSection(userAnswer, `エラー: ${result.error}`);
                 } else {
-                    addFeedbackSection('最初の質問', result.feedback);
+                    addFeedbackSection(userAnswer, result.feedback);
                     localStorage.setItem('lastFeedback', result.feedback);
                     document.getElementById('follow-up').style.display = 'block';
                 }
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
-                addFeedbackSection('最初の質問', '通信エラーが発生しました。');
+                addFeedbackSection(userAnswer, '通信エラーが発生しました。');
             }
         });
+
 
         // フォローアップ質問送信イベント
         document.getElementById('send-follow-up').addEventListener('click', async function () {
