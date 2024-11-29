@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 import json
 import random
 from openai import OpenAI
@@ -14,18 +14,53 @@ client = OpenAI(
 )
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # セッション暗号化のためのキー
 
-# 問題を読み込む関数
-def load_questions():
-    with open('questions.json', 'r') as f:
-        return json.load(f)
+JSON_DIR = os.path.join(os.getcwd(), "data")
 
-# トップページ：問題の出題
+def load_questions(level=None):
+    """
+    指定されたレベルのJSONファイルを読み込む。
+    """
+    # レベルが指定されていない場合、デフォルトを使用
+    if level is None:
+        level = 1  # デフォルトレベル
+
+    file_path = os.path.join(JSON_DIR, f"questions_{level}.json")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: {file_path} が見つかりません。")
+        return []
+    except json.JSONDecodeError as e:
+        print(f"Error: {file_path} のJSONが無効です - {e}")
+        return []
+    
 @app.route('/')
 def home():
-    questions = load_questions()
-    question = random.choice(questions)  # ランダムに1問を選択
-    return render_template('index.html', question=question)
+    # セッションからレベルを取得、デフォルトは1
+    level = session.get('level', 1)
+    questions = load_questions(level)
+    if questions:
+        question = random.choice(questions)
+        return render_template('index.html', question=question, level=level)
+    else:
+        return "質問データがありません。"
+
+@app.route('/set-level', methods=['POST'])
+def set_level():
+    # POSTリクエストで送信されたレベルをセッションに保存
+    level = request.json.get('level', 1)
+    session['level'] = level
+    return jsonify({"message": f"レベル {level} が設定されました。"})
+
+@app.route('/get-current-level', methods=['GET'])
+def get_current_level():
+    level = session.get('level', '未設定')
+    print(f"現在のレベル: {level}")  # デバッグ用ログ
+    return jsonify({"current_level": level})
+
 
 # 回答の処理
 @app.route('/submit', methods=['POST'])
@@ -92,7 +127,18 @@ def submit_follow_up():
         # OpenAI APIへのリクエスト
         chat_completion = client.chat.completions.create(
             messages=[
-                {"role": "system", "content": "あなたは英語教師で、ユーザーの質問に基づいて追加のフィードバックを提供します。"},
+                {
+                    "role": "system",
+                    "content": (
+                        "あなたは英語教師で、ユーザーの英作文を添削してください。"
+                        "以下のルールでHTML構造を使用してフィードバックを階層化してください："
+                        "1. 見出しには<h3>タグを使用してください"
+                        "3. 重要なポイントは<strong>タグで強調してください（例: '主語が単数です'）。"
+                        "4. 箇条書きリストには<ul>と<li>タグを使用してください。"
+                        "5. 必要に応じて、引用には<blockquote>タグを使用してください。"
+                        "6. すべてのフィードバックはHTML形式で読みやすく返してください。"
+                    )
+                },
                 {"role": "assistant", "content": previous_feedback},
                 {"role": "user", "content": follow_up_question}
             ],
