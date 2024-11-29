@@ -35,6 +35,19 @@ h1 {
     color: #0074d9; /* 青基調の文字色 */
 }
 
+#current-level-display {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f8ff; /* 薄い青背景 */
+    border: 1px solid #0074d9; /* 青い枠線 */
+    border-radius: 5px; /* 角を丸く */
+    font-size: 16px;
+    color: #333;
+    max-width: 100%; /* PCでの最大幅 */
+    margin-left: auto; /* 中央寄せ */
+    margin-right: auto; /* 中央寄せ */
+}
+
 textarea {
     width: 100%;
     max-width: 93%;
@@ -147,6 +160,7 @@ button[type="submit"]:hover {
     margin-bottom: 10px; /* セクション内の上下の余白 */
 }
 
+/* フィードバック専用セクション */
 .feedback-section {
     background-color: #f9fcff; /* 優しい青系の背景色 */
     border: 1px solid #b0c4de; /* 淡い青色の枠線 */
@@ -154,29 +168,97 @@ button[type="submit"]:hover {
     padding: 15px; /* 内側の余白 */
     margin-bottom: 20px; /* セクション間の余白 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影 */
-    position: relative; /* 下線の位置調整に必要 */
 }
 
-.feedback-header strong,
-.feedback-content strong {
+.feedback-section {
+    background-color: #f9fcff; /* 優しい青系の背景色 */
+    border: 1px solid #b0c4de; /* 淡い青色の枠線 */
+    border-radius: 8px; /* 角を丸くする */
+    padding: 15px; /* 内側の余白 */
+    margin-bottom: 20px; /* セクション間の余白 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影 */
+}
+
+/* ラベル専用スタイル */
+.feedback-label {
     display: inline-block; /* インライン要素として表示 */
-    font-size: 16px; /* 文字サイズを設定 */
-    margin-bottom: 10px; /* 下の余白を追加 */
-    color: white; /* テキストの色を白に設定 */
-    background-color: #2293f6; /* 背景色を青に設定 */
-    padding: 8px 15px; /* 内側の余白を追加 */
-    border-radius: 10px; /* ボタン風に丸みをつける */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
-    text-align: center; /* テキストを中央揃え */
+    font-size: 14px; /* 少し小さめのサイズ */
+    color: #ffffff; /* 白文字 */
+    background-color: #2b89da; /* 青い背景 */
+    padding: 8px 12px; /* 内側の余白 */
+    border-radius: 5px; /* ボタンのように丸みを付ける */
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.feedback-label:hover {
+    background-color: #005bb5; /* ホバー時に濃い青 */
+    transform: translateY(-2px); /* 浮き上がるように動かす */
+    cursor: pointer;
+}
+
+/* 見出しスタイル (h1, h2, h3) */
+.feedback-section h1,
+.feedback-section h2,
+.feedback-section h3 {
+    margin: 15px 0; /* 上下の余白 */
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.feedback-section h1 {
+    font-size: 20px;
+    border-bottom: 2px solid #0074d9; /* 下線 */
+    padding-bottom: 5px;
+}
+
+.feedback-section h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #0074d9; /* テキストを青に */
+    background-color: #f0f8ff; /* 優しい薄青の背景 */
+    padding: 10px 15px; /* 内側の余白を設定 */
+    border-left: 5px solid #0074d9; /* 左側に青い線を追加 */
+    margin-bottom: 15px; /* 下部に余白を追加 */
+    display: block; /* 幅いっぱいに表示 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+    border-radius: 5px; /* 角を少し丸くする */
     transition: background-color 0.3s ease, transform 0.2s ease; /* ホバー時のエフェクト */
 }
 
-.feedback-header strong:hover,
-.feedback-content strong:hover {
-    background-color: #005bb5; /* ホバー時に少し濃い青 */
-    transform: translateY(-2px); /* ホバー時に浮き上がる */
-    cursor: pointer; /* ホバー時にポインターを表示 */
+.feedback-section h2:hover {
+    background-color: #e6f3ff; /* ホバー時に少し濃い薄青に */
+    transform: translateY(-2px); /* 浮き上がるような動き */
+    cursor: default; /* ポインターは矢印のまま */
 }
+
+
+
+.feedback-section h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333; /* テキストの色 */
+    background-color: #ffffff; /* 白い背景 */
+    padding: 10px 15px; /* 背景の内側余白を設定 */
+    border-left: 6px solid #0074d9; /* 左側に青い線を追加 */
+    border-radius: 5px; /* 角を少し丸くする */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+    margin-bottom: 15px; /* 下部に余白を追加 */
+    display: block; /* 見出しをブロック要素に */
+    width: 80%; /* 見出しを親要素の幅いっぱいに */
+    transition: background-color 0.3s ease, border-left-color 0.3s ease; /* ホバー時のエフェクト */
+}
+
+.feedback-section h3:hover {
+    background-color: #f9f9f9; /* ホバー時に少し薄いグレーに */
+    border-left-color: #98cafd; /* ホバー時に青い線を濃くする */
+    cursor: default; /* ホバー時のポインターを矢印に */
+}
+
+
+
 
 
 #loading {
@@ -226,6 +308,7 @@ button[type="submit"]:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
     box-sizing: border-box; /* パディングを含めて幅を計算 */
     margin-top: 20px; /* 上部に余白を追加 */
+    padding-bottom: 100px; /* ボトム部分のパディングを増加 */
 }
 
 /* フォローアップ質問テキストエリア */
@@ -275,4 +358,92 @@ button[type="submit"]:hover {
     #follow-up-question {
         max-width: 93%; /* スマホでは幅を100%に広げる */
     }
+}
+
+/* スライドメニューのスタイル */
+.slide-menu {
+    position: fixed;
+    top: 0;
+    left: -300px; /* メニュー幅(250px) + 余白を確保して完全に画面外へ */
+    width: 250px;
+    height: 100%;
+    background-color: #0074d9; /* 青背景 */
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: left 0.3s ease; /* スライド効果 */
+    z-index: 1000;
+}
+
+/* メニューの見出し */
+.slide-menu h2 {
+    margin-top: 0;
+    font-size: 24px;
+    text-align: center;
+    color: white;
+}
+
+/* メニューのリスト */
+.slide-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.slide-menu ul li {
+    margin-bottom: 15px;
+}
+
+.slide-menu ul li button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #0074d9;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.slide-menu ul li button:hover {
+    background-color: #005bb5;
+    color: white;
+}
+
+/* メニュー開閉ボタン */
+#menu-toggle {
+    position: fixed;
+    bottom: 20px; /* 画面下部からの距離 */
+    left: 50%; /* 画面中央 */
+    transform: translateX(-50%); /* 中央に配置 */
+    background-color: #0074d9; /* ボタンの背景色 */
+    color: white; /* テキストの色 */
+    width: 200px; /* ボタンの幅 */
+    height: 50px; /* ボタンの高さ */
+    border-radius: 25px; /* 丸みのあるボタン */
+    display: flex; /* フレックスボックスで中央揃え */
+    justify-content: center; /* 水平方向に中央揃え */
+    align-items: center; /* 垂直方向に中央揃え */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影 */
+    cursor: pointer; /* マウスカーソルをポインターに変更 */
+    z-index: 1001; /* メニューより上に配置 */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* ホバー時のアニメーション */
+}
+
+/* ホバー時のエフェクト */
+#menu-toggle:hover {
+    background-color: #005bb5; /* ホバー時に濃い青 */
+    transform: translateX(-50%) scale(1.05); /* わずかに拡大 */
+}
+
+/* テキスト */
+#menu-toggle span {
+    font-size: 16px; /* テキストのサイズ */
+    text-align: center; /* テキストを中央揃え */
+    white-space: nowrap; /* テキストが折り返されないように */
+}
+
+/* メニューが表示されたときの状態 */
+.slide-menu.active {
+    left: 0; /* 画面内に表示 */
 }
