@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, session, jsonify
+from flask import Flask, redirect, request, session, jsonify, Blueprint
 import requests
 import uuid
 import sqlite3
@@ -8,18 +8,17 @@ import os
 from send_question import get_users_and_send_questions
 
 load_dotenv()
-# Flaskアプリケーションの初期化
-app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY")   # セッション管理用のキー
 
+
+routes = Blueprint('routes', __name__)
 # LINE Developersで取得した情報を設定
 LINE_CLIENT_ID = '2006630635'
 LINE_CLIENT_SECRET = os.getenv("LINE_CLIENT_SECRET") 
-LINE_REDIRECT_URI = 'https://oneline-linetest.onrender.com/callback'
+LINE_REDIRECT_URI = 'https://oneline-hxbw.onrender.com/callback'
 CHANNEL_ACCESS_TOKEN = os.getenv("CHANNEL_ACCESS_TOKEN") 
 
 # ログイン画面を表示するルート
-@app.route('/line')
+@routes.route('/line')
 def index():
     return '''
     <h1>LINEログインテスト</h1>
@@ -29,7 +28,7 @@ def index():
     '''
 
 # LINEログインを開始するルート
-@app.route('/login')
+@routes.route('/login')
 def login():
     state = str(uuid.uuid4())  # CSRF対策用のランダムな文字列
     session['state'] = state
@@ -44,7 +43,7 @@ def login():
     return redirect(login_url)
 
 
-@app.route('/callback')
+@routes.route('/callback')
 def callback():
     # 認証コードとstateを取得
     code = request.args.get('code')
@@ -161,7 +160,7 @@ def send_difficulty_options(reply_token):
     requests.post(url, headers=headers, json=data)
 
 
-@app.route('/webhook', methods=['POST'])
+@routes.route('/webhook', methods=['POST'])
 def webhook():
     data = request.get_json()
     print(data)  # 確認用
@@ -210,7 +209,7 @@ def save_user_level(line_user_id, level):
     conn.close()
 
 
-@app.route('/view-data')
+@routes.route('/view-data')
 def view_data():
     import sqlite3
     conn = sqlite3.connect('database.db')
@@ -230,12 +229,11 @@ def view_data():
     return jsonify(result)
 
 
-@app.route('/send')
+@routes.route('/send')
 def send_questions():
     get_users_and_send_questions()
     return '<h1>問題の送信が完了しました！</h1>'
 
 
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+def register_routes(app):
+    app.register_blueprint(routes)

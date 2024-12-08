@@ -4,6 +4,7 @@ import random
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from routes import register_routes
 
 # .envファイルから環境変数を読み込む
 load_dotenv()
@@ -14,7 +15,9 @@ client = OpenAI(
 )
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # セッション暗号化のためのキー
+app.secret_key =os.getenv("FLASK_SECRET_KEY") 
+
+register_routes(app)
 
 JSON_DIR = os.path.join(os.getcwd(), "data")
 
